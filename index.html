@@ -231,7 +231,7 @@ ul li,.layers li{margin:6pt 0 0}
 :root{--pol:#2A3846;--pol-t:#fff}
 :root[data-theme="dark"]{--pol:#C8A96E;--pol-t:#1a1a1a}
 .menu .tab,.submenu .sb{width:140px}
-.vm-wrap{max-width:min(1000px,calc((100vh - 290px)*860/572));min-width:600px;margin:0 auto;border:1px solid var(--line);border-radius:6px;background:var(--surf);overflow:hidden}
+.vm-row{display:flex;gap:10px;align-items:flex-start}.vmap .zb{flex:0 0 auto;flex-direction:column;align-items:stretch;margin:0}.vmap .zb .btn{width:100%}.vmap .pills{margin:8px 0 0}.vm-wrap{flex:1 1 auto;max-width:min(1400px,calc((100vh - 230px)*860/572));min-width:600px;margin:0;border:1px solid var(--line);border-radius:6px;background:var(--surf);overflow:hidden}
 .vmap svg{display:block;width:100%;height:auto;touch-action:none;cursor:grab;user-select:none}
 .vmap svg.drag{cursor:grabbing}
 .vmap .zb .pills{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
@@ -1212,7 +1212,7 @@ const VM = {W:860,H:572,
       ["Torre Sul",598,90,166,396,[["Ed. 3",166],["Ed. 6",384]],290]],
   patio:[284,234,252,112],
   st:[["Rua da Fitela",417,16,0],["Rua Quinta do Castro",417,566,0],["Rua das Fábricas",848,288,90]],
-  res:{M:["t",104,"16 · 20"],B:["t",320,48],C:["t",462,66],D:["t",691,108],E:["r",219,471],F:["r",270,467],G:["b",665,22],H:["b",484,54],I:["b",399,76],J:["b",191,106],L:["b",98,112]},
+  res:{M:["t",104,[16,20]],B:["t",320,48],C:["t",462,66],D:["t",691,108],E:["r",219,471],F:["r",270,467],G:["b",665,22],H:["b",484,54],I:["b",399,76],J:["b",191,106],L:["b",98,112]},
   com:[["t",502,68],["t",651,106],["t",732,112],["r",179,475],["r",321,463],["b",138,110],["b",230,98],["b",361,78],["b",445,70],["b",528,44],["b",624,32],["b",702,18]],
   box:{"Ed. 1":[30,0,270,300],"Ed. 2":[262,0,572,250],"Ed. 3":[570,0,860,300],"Ed. 4":[30,280,270,572],"Ed. 5":[262,330,572,572],"Ed. 6":[570,280,860,572]}};
 const vmPos = (sd,p) => sd==="t"?{px:p,py:40,cx:p,cy:68,ox:p,oy:106}:sd==="b"?{px:p,py:536,cx:p,cy:508,ox:p,oy:470}:{px:816,py:p,cx:784,cy:p,ox:0,oy:p};
@@ -1236,10 +1236,10 @@ function vmap(el){
   });
   S.com.forEach(([sd,p,n])=>{const q=vmPos(sd,p);s+=`<g class="vm-com"><rect x="${q.px-16}" y="${q.py-9}" width="32" height="18" rx="4"/><text x="${q.px}" y="${q.py}" ${mid}>${n}</text></g>`;});
   ENT.forEach(e=>{
-    const l=e[0],[sd,p,n]=S.res[l],q=vmPos(sd,p),bw=Math.max(34,10+7.5*String(n).length);
+    const l=e[0],[sd,p,n]=S.res[l],q=vmPos(sd,p);
     const tk=sd==="t"?[q.cx,78,q.cx,90]:sd==="b"?[q.cx,486,q.cx,498]:[764,q.cy,774,q.cy];
     s+=`<g class="vm-ent${NOLEG.includes(l)?' nol':''}" data-e="${l}"><line class="vm-tick" x1="${tk[0]}" y1="${tk[1]}" x2="${tk[2]}" y2="${tk[3]}"/>`;
-    s+=`<rect class="vm-b" x="${q.px-bw/2}" y="${q.py-10}" width="${bw}" height="20" rx="4"/><text class="vm-n" x="${q.px}" y="${q.py}" ${mid}>${n}</text>`;
+    s+=`${(()=>{const ns=Array.isArray(n)?n:[n],ws=ns.map(v=>Math.max(34,10+7.5*String(v).length)),tot=ws.reduce((a,b)=>a+b,0)+4*(ns.length-1);let x=q.px-tot/2;return ns.map((v,i)=>{const r=`<rect class="vm-b" x="${x}" y="${q.py-10}" width="${ws[i]}" height="20" rx="4"/><text class="vm-n" x="${x+ws[i]/2}" y="${q.py}" ${mid}>${v}</text>`;x+=ws[i]+4;return r;}).join("");})()}`;
     s+=`<circle class="vm-c" cx="${q.cx}" cy="${q.cy}" r="10"/><text class="vm-l" x="${q.cx}" y="${q.cy}" ${mid}>${l}</text>`;
     const lab=vmLabel(mode,l);
     if(Array.isArray(lab)){
@@ -1261,8 +1261,8 @@ function vmap(el){
     sel:pill(SEL17.length,"Vistorias")+pill("11 / 11","Entradas")+pill(SEL17.filter(f=>frac(f).top).length,"Últimos Pisos")+pill(n("res"),"Reservas"),
     cov:pill(n("vis")+" / "+HAB.length,"Com Vistoria · "+pct(n("vis"),HAB.length))+pill(n("res"),"Reserva")+pill(n("sem"),"Sem Vistoria Interior")+pill(n("cave"),"Lojas · Pelas Caves","Lojas")}[mode];
   const extra={base:"",qx:`<span><i class="lg-qx"></i>N.º de queixas</span>`,sel:`<span><i class="lg-sel"></i>Frações a vistoriar</span>`,cov:`<span><i class="lg-cov"></i>Com vistoria / queixas</span>`}[mode];
-  el.innerHTML=`<div class="zb"><button class="btn" data-z="all">Vista Geral</button>${Object.keys(S.box).map(k=>`<button class="btn" data-z="${k}">${k}</button>`).join("")}<button class="btn" data-z="in">+</button><button class="btn" data-z="out">−</button>${mode==="base"?`<span class="pills"><span class="muted">Clique abre a entrada · roda = zoom</span></span>`:`<span class="pills">${pills}</span>`}</div>
-  <div class="vm-wrap">${s}</div>
+  el.innerHTML=`<div class="vm-row"><div class="zb"><button class="btn" data-z="all">Vista Geral</button>${Object.keys(S.box).map(k=>`<button class="btn" data-z="${k}">${k}</button>`).join("")}<button class="btn" data-z="in">+</button><button class="btn" data-z="out">−</button></div>
+  <div class="vm-wrap">${s}</div></div>${mode==="base"?"":`<div class="pills">${pills}</div>`}
   ${mode==="base"?"":`<div class="legend"><span><i class="lg-res"></i>N.º de polícia · habitação</span><span><i class="lg-let"></i>Entrada</span><span><i class="lg-com"></i>N.º de polícia · comércio</span><span><i class="lg-nol"></i>Posição a confirmar com o cliente</span>${extra}<span class="muted">Clique abre a entrada · roda = zoom</span></div>`}`;
   const svg=el.querySelector("svg"); let vb=[0,0,S.W,S.H], drag=null, moved=false;
   const set=()=>{vb[2]=Math.min(S.W,Math.max(S.W/4,vb[2]));vb[3]=vb[2]*S.H/S.W;vb[0]=Math.min(S.W-vb[2],Math.max(0,vb[0]));vb[1]=Math.min(S.H-vb[3],Math.max(0,vb[1]));svg.setAttribute("viewBox",vb.map(v=>Math.round(v*10)/10).join(" "));};
