@@ -15,9 +15,9 @@ function pagina(erro) {
   return `<!DOCTYPE html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
 <title>Gaiamar · Acesso Reservado</title>
 <style>
-body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#16202b;font-family:Calibri,"Segoe UI",Arial,sans-serif;font-size:10pt;line-height:1.5;color:#e7ebf0}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#16202b;font-family:Calibri,"Segoe UI",Arial,sans-serif;font-size:9pt;line-height:1.5;color:#e7ebf0}
 form{background:#1e2a38;border:1px solid #34465a;border-radius:8px;padding:24px 28px;width:min(360px,90vw)}
-h1{font-size:10pt;margin:0 0 6pt;font-weight:700}
+h1{font-size:9pt;margin:0 0 6pt;font-weight:700}
 p{margin:0 0 12pt;color:#aab6c3}
 input{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid #34465a;border-radius:6px;background:#16202b;color:#e7ebf0;font:inherit;margin-bottom:10pt}
 button{width:100%;padding:8px;border:0;border-radius:6px;background:#C8A96E;color:#1a1a1a;font:inherit;font-weight:700;cursor:pointer}
