@@ -1222,7 +1222,7 @@ function vmLabel(mode,l){
   if(mode==="sel") return s.rs.filter(isVis).map(d=>d.f).join(" · ");
   if(mode==="cov") return s.rs.filter(isVis).length+"/"+s.rs.length;
   const e=ENT.find(x=>x[0]===l), ls=[...new Set(s.fs.map(d=>d.lado))].sort();
-  return [s.fs.length+" frações", e[3]+" pisos", "Letras "+(ls.length>2?ls[0]+"–"+ls[ls.length-1]:ls.join(" · "))];
+  return [e[3]+"P | "+s.fs.length+"F", "["+s.fs[0].f+"–"+s.fs[s.fs.length-1].f+"]"];
 }
 function vmap(el){
   const mode=el.dataset.mode, S=VM, mid=`text-anchor="middle" dominant-baseline="central"`;
@@ -1243,8 +1243,8 @@ function vmap(el){
     s+=`<circle class="vm-c" cx="${q.cx}" cy="${q.cy}" r="10"/><text class="vm-l" x="${q.cx}" y="${q.cy}" ${mid}>${l}</text>`;
     const lab=vmLabel(mode,l);
     if(Array.isArray(lab)){
-      let ox=q.ox, oy=sd==="t"?q.oy:sd==="b"?q.oy-26:q.oy-18;
-      if(sd==="r") ox=760-34; else {const t=S.tw.find(t=>p>=t[1]-12&&p<=t[1]+t[3]+12);ox=Math.max(t[1]+38,Math.min(t[1]+t[3]-38,ox));}
+      let ox=q.ox, oy=sd==="t"?q.oy:sd==="b"?q.oy-12:q.oy-7;
+      if(sd==="r") ox=760-40; else {const t=S.tw.find(t=>p>=t[1]-12&&p<=t[1]+t[3]+12);ox=Math.max(t[1]+40,Math.min(t[1]+t[3]-40,ox));}
       lab.forEach((x,i)=>{s+=`<text class="vm-bl" x="${ox}" y="${oy+14*i}" ${mid}>${x}</text>`;});
     } else if(lab){
       const w=14+5.8*lab.length; let ox=q.ox;
