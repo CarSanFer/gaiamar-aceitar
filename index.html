@@ -53,7 +53,7 @@ button,select,input{font:inherit;color:inherit}
 .g3{grid-template-columns:1fr 1fr 1fr}
 .g-map{grid-template-columns:minmax(0,1fr) 340px}
 @media(max-width:1000px){.g2,.g3,.g-map{grid-template-columns:1fr}}
-svg text{font:9pt Calibri,Carlito,"Segoe UI",Arial,sans-serif;fill:var(--ink)}
+svg text{font:9pt Calibri,Carlito,"Segoe UI",Arial,sans-serif;fill:var(--ink)}.vmap svg text{font-size:var(--fs,9pt)}
 svg .ax{fill:var(--ink2)}
 svg .gl{stroke:var(--grid);stroke-width:1}
 svg .bar{cursor:pointer}
@@ -1261,7 +1261,10 @@ function vmap(el){
   <div class="vm-wrap">${s}</div></div>${mode==="base"?"":`<div class="pills">${pills}</div>`}
   ${mode==="base"?"":`<div class="legend"><span><i class="lg-res"></i>N.º de polícia · habitação</span><span><i class="lg-let"></i>Entrada</span><span><i class="lg-com"></i>N.º de polícia · comércio</span>${extra}<span class="muted">Clique abre a entrada · roda = zoom</span></div>`}`;
   const svg=el.querySelector("svg"); let vb=[0,0,S.W,S.H], drag=null, moved=false;
-  const set=()=>{vb[2]=Math.min(S.W,Math.max(S.W/4,vb[2]));vb[3]=vb[2]*S.H/S.W;vb[0]=Math.min(S.W-vb[2],Math.max(0,vb[0]));vb[1]=Math.min(S.H-vb[3],Math.max(0,vb[1]));svg.setAttribute("viewBox",vb.map(v=>Math.round(v*10)/10).join(" "));};
+  const set=()=>{vb[2]=Math.min(S.W,Math.max(S.W/4,vb[2]));vb[3]=vb[2]*S.H/S.W;vb[0]=Math.min(S.W-vb[2],Math.max(0,vb[0]));vb[1]=Math.min(S.H-vb[3],Math.max(0,vb[1]));svg.setAttribute("viewBox",vb.map(v=>Math.round(v*10)/10).join(" "));
+  const pw=svg.getBoundingClientRect().width; if(pw>0){svg.style.setProperty("--fs",(12*vb[2]/pw).toFixed(2)+"px");
+    svg.querySelectorAll("text.vm-pt").forEach(tx=>{const r=tx.previousElementSibling; if(!r||!r.classList.contains("vm-pill")) return; const bw=tx.getBBox().width; if(bw>0){const w=bw+14; r.setAttribute("width",w); r.setAttribute("x",(+tx.getAttribute("x"))-w/2);}});}};
+  set(); if(window.ResizeObserver) new ResizeObserver(()=>set()).observe(el);
   const zoom=(f,cx,cy)=>{const nw=Math.min(S.W,Math.max(S.W/4,vb[2]/f)),k=nw/vb[2];vb[0]=cx-(cx-vb[0])*k;vb[1]=cy-(cy-vb[1])*k;vb[2]=nw;set();};
   const fit=b=>{const w=b[2]-b[0],h=b[3]-b[1],nw=Math.max(w,h*S.W/S.H),nh=nw*S.H/S.W;vb=[(b[0]+b[2])/2-nw/2,(b[1]+b[3])/2-nh/2,nw,nh];set();};
   svg.addEventListener("wheel",e=>{if(e.deltaY>0&&vb[2]>=S.W)return;e.preventDefault();const r=svg.getBoundingClientRect();zoom(e.deltaY<0?1.2:1/1.2,vb[0]+(e.clientX-r.left)/r.width*vb[2],vb[1]+(e.clientY-r.top)/r.height*vb[3]);},{passive:false});
