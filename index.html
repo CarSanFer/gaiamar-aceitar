@@ -180,7 +180,7 @@ a.btn{text-decoration:none;color:inherit;display:inline-block}
 .pop{position:fixed;inset:0;background:rgba(10,16,24,.65);z-index:120;display:none;align-items:center;justify-content:center}
 .pop.on{display:flex}
 .pop-box{background:var(--surf);border:1px solid var(--line);border-radius:8px;width:min(980px,94vw);height:92vh;display:flex;flex-direction:column;overflow:hidden}
-.pop-hd{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line)}
+.pop-hd{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line)}.ent-id{margin-bottom:6pt}.ent-id div{line-height:1.5}
 .pop-bd{flex:1;overflow:auto;background:var(--surf2)}
 .pop-bd img{display:block;width:100%;max-width:900px;margin:8px auto;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
 .pop-bd .mail{max-height:none;border:0;border-radius:0;margin:0;padding:12px 16px}
@@ -1320,12 +1320,13 @@ function openPop(kind,title,html){
 }
 const qxItem = d => `<div class="qx q-${covOf(d)}" data-f="${d.f}">${d.f} · ${loc(d)} · <span class="muted">${d.fr.join(", ")||"—"}${d.fot?" · "+d.fot+" fotos":""}${/vídeo/i.test(d.ev)?" · vídeo":""}</span><br>${d.s||'<span class="muted">Sem descrição</span>'}</div>`;
 function entPop(l){
-  const e=ENT.find(x=>x[0]===l), s=entStats(l), vis=s.rs.filter(isVis), out=s.rs.filter(d=>!isVis(d));
+  const e=ENT.find(x=>x[0]===l), s=entStats(l), vis=s.fs.filter(isVis), visq=s.rs.filter(isVis), out=s.rs.filter(d=>!isVis(d));
   const seg=s.rs.filter(d=>d.fr.includes("Segurança")).map(d=>d.f);
   const tips=[...new Set(s.fs.map(d=>d.tip).filter(Boolean))].sort().join(", ");
-  const head=e?`${s.fs.length} frações (${s.fs[0].f}–${s.fs[s.fs.length-1].f}) · pisos 1–${e[3]} · ${tips}${NOLEG.includes(l)?" · não assinalada na planta do cliente":""}`:`18 frações comerciais (FB–FS) · Piso 0`;
-  const html=`<div class="muted">${head}</div>
-  <div>${pill(s.rs.length,"Queixas"+(e?" · "+pct(s.rs.length,s.fs.length):""))}${pill(vis.length,"Vistorias")}${pill(s.res.length,"Reservas")}${e?pill(vis.length+" / "+s.rs.length,"Com Vistoria"):""}</div>
+  const rua=x=>x.replace("R. Fitela","Rua da Fitela").replace("R. Fábricas","Rua das Fábricas").replace("R. Q. Castro","Rua Quinta do Castro").replace(" · "," e ");
+  const head=e?[rua(e[2]), e[1].replace("Ed. ","Edifício ")+" · "+TORRE[l], e[3]+" Pisos", s.fs.map(d=>d.f).join(", ")]:["Piso 0", "18 frações comerciais", s.fs.map(d=>d.f).join(", ")];
+  const html=`<div class="ent-id">${head.map(x=>`<div>${x}</div>`).join("")}</div>
+  <div>${pill(s.rs.length,"Queixas"+(e?" · "+pct(s.rs.length,s.fs.length):""))}${pill(vis.length,"Vistorias")}${pill(s.res.length,"Reservas")}${e?pill(visq.length+" / "+s.rs.length,"Com Vistoria"):""}</div>
   <h3>1 · Queixas</h3>
   <div id="entFr" style="max-width:560px"></div>
   ${s.rs.map(qxItem).join("")||'<div class="muted">Sem queixas.</div>'}
@@ -1334,9 +1335,9 @@ function entPop(l){
   <div>${e?PROP[l]:"Loja n.º 68 (R. Fitela) escolhida pelo cliente — código de fração a confirmar. FD, FF e FK vistas na inspeção do estacionamento / cave."}</div>
   ${vis.map(d=>`<div class="qx q-vis" data-f="${d.f}">${d.f} · ${loc(d)}${d.terr?" · terraço":""} · ${d.p} · n.º ${SEL17.indexOf(d.f)+1} das ${SEL17.length}<br>${d.j||""}</div>`).join("")}
   <h3>3 · Queixas vs Proposta</h3>
-  ${e?`<div>${vis.length} de ${s.rs.length} queixas com vistoria (${pct(vis.length,s.rs.length)})${out.length?" · as restantes:":""}</div>`:""}
+  ${e?`<div>${visq.length} de ${s.rs.length} queixas com vistoria (${pct(visq.length,s.rs.length)})${out.length?" · as restantes:":""}</div>`:""}
   ${out.length?`<table class="cmp wrap"><thead><tr><th>Fração</th><th>Situação</th><th>Como Fica Coberta</th></tr></thead><tbody>${out.map(d=>`<tr class="row" data-f="${d.f}"><td>${d.f} · ${loc(d)}</td><td>${COVL[covOf(d)]}</td><td>${como(d)}</td></tr>`).join("")}</tbody></table>`:""}`;
-  const bd=openPop("ent",e?`Entrada ${l} · ${e[2]} · ${e[1]} · ${TORRE[l]}`:"Lojas · Piso 0",html);
+  const bd=openPop("ent",e?`Entrada ${l}`:"Lojas",html);
   if(s.fr.length) hbar(document.getElementById("entFr"), s.fr.map(([k,v])=>({label:k,v,key:k,color:k==="Segurança"?"var(--c-x)":"var(--c-b)"})), {lw:90,onClick:()=>{},tip:r=>`<b>${r.label}</b> · ${r.v} queixas<br>${s.rs.filter(d=>d.fr.includes(r.key)).map(d=>d.f).join(", ")}`});
   bd.querySelectorAll("[data-f]").forEach(q=>q.onclick=()=>{hideTip();frPop(q.dataset.f);});
 }
