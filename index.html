@@ -180,7 +180,7 @@ a.btn{text-decoration:none;color:inherit;display:inline-block}
 .pop{position:fixed;inset:0;background:rgba(10,16,24,.65);z-index:120;display:none;align-items:center;justify-content:center}
 .pop.on{display:flex}
 .pop-box{background:var(--surf);border:1px solid var(--line);border-radius:8px;width:min(980px,94vw);height:92vh;display:flex;flex-direction:column;overflow:hidden}
-.pop-hd{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line)}.ent-id{margin-bottom:6pt}.tip-qx{color:#ff7b6b;font-weight:700}.ent-id div{line-height:1.5}
+.pop-hd{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line)}.ent-id{margin-bottom:6pt}.tip-qx{background:var(--c-b);color:#fff;border-radius:8px;padding:1px 6px}.ent-id div{line-height:1.5}
 .pop-bd{flex:1;overflow:auto;background:var(--surf2)}
 .pop-bd img{display:block;width:100%;max-width:900px;margin:8px auto;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
 .pop-bd .mail{max-height:none;border:0;border-radius:0;margin:0;padding:12px 16px}
@@ -1241,7 +1241,7 @@ function vmap(el){
     if(Array.isArray(lab)){
       let ox=q.ox, oy=sd==="t"?q.oy:sd==="b"?q.oy-14*(lab.length-1):q.oy-7*(lab.length-1);
       if(sd==="r") ox=760-40; else {const t=S.tw.find(t=>p>=t[1]-12&&p<=t[1]+t[3]+12);ox=Math.max(t[1]+40,Math.min(t[1]+t[3]-40,ox));}
-      lab.forEach((x,i)=>{if(typeof x==="object"){const w=14+5.8*x.t.length;s+=`<rect class="vm-pill ${x.cls}" x="${ox-w/2}" y="${oy+14*i-9}" width="${w}" height="18" rx="9"/><text class="vm-pt ${x.cls}" x="${ox}" y="${oy+14*i+1}" ${mid}>${x.t}</text>`;}else s+=`<text class="vm-bl" x="${ox}" y="${oy+14*i}" ${mid}>${x}</text>`;});
+      lab.forEach((x,i)=>{if(typeof x==="object"){const w=14+5.8*x.t.length;s+=`<rect class="vm-pill ${x.cls}" x="${ox-w/2}" y="${oy+14*i-4}" width="${w}" height="18" rx="9"/><text class="vm-pt ${x.cls}" x="${ox}" y="${oy+14*i+6}" ${mid}>${x.t}</text>`;}else s+=`<text class="vm-bl" x="${ox}" y="${oy+14*i}" ${mid}>${x}</text>`;});
     } else if(lab){
       const w=14+5.8*lab.length; let ox=q.ox;
       if(sd==="r") ox=760-w/2; else {const t=S.tw.find(t=>p>=t[1]-12&&p<=t[1]+t[3]+12);ox=Math.max(t[1]+4+w/2,Math.min(t[1]+t[3]-4-w/2,ox));}
