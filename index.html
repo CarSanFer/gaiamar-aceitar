@@ -180,7 +180,7 @@ a.btn{text-decoration:none;color:inherit;display:inline-block}
 .pop{position:fixed;inset:0;background:rgba(10,16,24,.65);z-index:120;display:none;align-items:center;justify-content:center}
 .pop.on{display:flex}
 .pop-box{background:var(--surf);border:1px solid var(--line);border-radius:8px;width:min(980px,94vw);height:92vh;display:flex;flex-direction:column;overflow:hidden}
-.pop-hd{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line)}.ent-id{margin-bottom:6pt}.ent-id div{line-height:1.5}
+.pop-hd{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line)}.ent-id{margin-bottom:6pt}.tip-qx{color:#ff7b6b;font-weight:700}.ent-id div{line-height:1.5}
 .pop-bd{flex:1;overflow:auto;background:var(--surf2)}
 .pop-bd img{display:block;width:100%;max-width:900px;margin:8px auto;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
 .pop-bd .mail{max-height:none;border:0;border-radius:0;margin:0;padding:12px 16px}
@@ -1275,8 +1275,8 @@ function vmap(el){
   svg.querySelectorAll(".vm-ent").forEach(g=>{
     const l=g.dataset.e, e=ENT.find(x=>x[0]===l), st=entStats(l), vis=st.fs.filter(isVis).map(d=>d.f), visq=st.rs.filter(isVis).length, rua=x=>x.replace("R. Fitela","Rua da Fitela").replace("R. Fábricas","Rua das Fábricas").replace("R. Q. Castro","Rua Quinta do Castro").replace(" · "," e ");
     g.onclick=()=>{if(moved)return;hideTip();entPop(l);};
-    g.onmouseenter=ev=>showTip(ev,`${rua(e[2])}<br><b>Entrada ${l}</b><br>${e[1].replace("Ed. ","Edifício ")} · ${TORRE[l]}<br>${e[3]} Pisos<br>${st.fs.map(d=>d.f).join(", ")}`+
-      (mode==="qx"?`<br>${st.rs.length} queixas: ${st.rs.map(d=>d.f).join(", ")}`:mode==="sel"?`<br>Vistorias: ${vis.join(", ")}${st.res.length?" · Reservas: "+st.res.map(d=>d.f).join(", "):""}`:mode==="cov"?`<br>${visq} de ${st.rs.length} queixas com vistoria`:"")+
+    g.onmouseenter=ev=>showTip(ev,`${e[1].replace("Ed. ","Edifício ")} · ${TORRE[l]}<br>${e[3]} Pisos<br>${st.fs.map(d=>mode==="qx"&&RESP(d)?`<span class="tip-qx">${d.f}</span>`:d.f).join(", ")}`+
+      (mode==="qx"?`<br>${st.rs.length} queixas a vermelho`:mode==="sel"?`<br>Vistorias: ${vis.join(", ")}${st.res.length?" · Reservas: "+st.res.map(d=>d.f).join(", "):""}`:mode==="cov"?`<br>${visq} de ${st.rs.length} queixas com vistoria`:"")+
       (NOLEG.includes(l)?"<br><i>Não assinalada na planta do cliente — posição a confirmar</i>":""));
     g.onmousemove=moveTip; g.onmouseleave=hideTip;
   });
