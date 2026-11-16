@@ -1273,10 +1273,10 @@ function vmap(el){
   el.querySelectorAll(".zb .btn").forEach(b=>b.onclick=()=>{const z=b.dataset.z;if(z==="all"){vb=[0,0,S.W,S.H];set();}else if(z==="in"||z==="out")zoom(z==="in"?1.3:1/1.3,vb[0]+vb[2]/2,vb[1]+vb[3]/2);else fit(S.box[z]);});
   el.querySelectorAll(".pill.go").forEach(p=>p.onclick=()=>entPop(p.dataset.go));
   svg.querySelectorAll(".vm-ent").forEach(g=>{
-    const l=g.dataset.e, e=ENT.find(x=>x[0]===l), st=entStats(l), vis=st.rs.filter(isVis).map(d=>d.f);
+    const l=g.dataset.e, e=ENT.find(x=>x[0]===l), st=entStats(l), vis=st.fs.filter(isVis).map(d=>d.f), visq=st.rs.filter(isVis).length, rua=x=>x.replace("R. Fitela","Rua da Fitela").replace("R. Fábricas","Rua das Fábricas").replace("R. Q. Castro","Rua Quinta do Castro").replace(" · "," e ");
     g.onclick=()=>{if(moved)return;hideTip();entPop(l);};
-    g.onmouseenter=ev=>showTip(ev,`<b>Entrada ${l}</b> · ${e[2]} · ${e[1]} · ${TORRE[l]}<br>${st.fs.length} frações · pisos 1–${e[3]}`+
-      (mode==="qx"?`<br>${st.rs.length} queixas: ${st.rs.map(d=>d.f).join(", ")}`:mode==="sel"?`<br>Vistorias: ${vis.join(", ")}${st.res.length?" · Reservas: "+st.res.map(d=>d.f).join(", "):""}`:mode==="cov"?`<br>${vis.length} de ${st.rs.length} queixas com vistoria`:"")+
+    g.onmouseenter=ev=>showTip(ev,`${rua(e[2])}<br><b>Entrada ${l}</b><br>${e[1].replace("Ed. ","Edifício ")} · ${TORRE[l]}<br>${e[3]} Pisos<br>${st.fs.map(d=>d.f).join(", ")}`+
+      (mode==="qx"?`<br>${st.rs.length} queixas: ${st.rs.map(d=>d.f).join(", ")}`:mode==="sel"?`<br>Vistorias: ${vis.join(", ")}${st.res.length?" · Reservas: "+st.res.map(d=>d.f).join(", "):""}`:mode==="cov"?`<br>${visq} de ${st.rs.length} queixas com vistoria`:"")+
       (NOLEG.includes(l)?"<br><i>Não assinalada na planta do cliente — posição a confirmar</i>":""));
     g.onmousemove=moveTip; g.onmouseleave=hideTip;
   });
