@@ -1214,7 +1214,7 @@ const VM = {W:860,H:572,
 const vmPos = (sd,p) => sd==="t"?{px:p,py:40,cx:p,cy:68,ox:p,oy:106}:sd==="b"?{px:p,py:536,cx:p,cy:508,ox:p,oy:470}:{px:816,py:p,cx:784,cy:p,ox:0,oy:p};
 function vmLabel(mode,l){
   const s=entStats(l);
-  if(mode==="qx") return String(s.rs.length);
+  if(mode==="qx"){const e=ENT.find(x=>x[0]===l);return [e[3]+"P", s.fs.length+"F ["+s.fs[0].f+"–"+s.fs[s.fs.length-1].f+"]", {t:s.rs.length+(s.rs.length===1?" Queixa":" Queixas"), cls:"vm-qx"}];}
   if(mode==="sel") return s.rs.filter(isVis).map(d=>d.f).join(" · ");
   if(mode==="cov") return s.rs.filter(isVis).length+"/"+s.rs.length;
   const e=ENT.find(x=>x[0]===l), ls=[...new Set(s.fs.map(d=>d.lado))].sort();
@@ -1239,9 +1239,9 @@ function vmap(el){
     s+=`<circle class="vm-c" cx="${q.cx}" cy="${q.cy}" r="10"/><text class="vm-l" x="${q.cx}" y="${q.cy}" ${mid}>${l}</text>`;
     const lab=vmLabel(mode,l);
     if(Array.isArray(lab)){
-      let ox=q.ox, oy=sd==="t"?q.oy:sd==="b"?q.oy-12:q.oy-7;
+      let ox=q.ox, oy=sd==="t"?q.oy:sd==="b"?q.oy-14*(lab.length-1):q.oy-7*(lab.length-1);
       if(sd==="r") ox=760-40; else {const t=S.tw.find(t=>p>=t[1]-12&&p<=t[1]+t[3]+12);ox=Math.max(t[1]+40,Math.min(t[1]+t[3]-40,ox));}
-      lab.forEach((x,i)=>{s+=`<text class="vm-bl" x="${ox}" y="${oy+14*i}" ${mid}>${x}</text>`;});
+      lab.forEach((x,i)=>{if(typeof x==="object"){const w=14+5.8*x.t.length;s+=`<rect class="vm-pill ${x.cls}" x="${ox-w/2}" y="${oy+14*i-9}" width="${w}" height="18" rx="9"/><text class="vm-pt ${x.cls}" x="${ox}" y="${oy+14*i+1}" ${mid}>${x.t}</text>`;}else s+=`<text class="vm-bl" x="${ox}" y="${oy+14*i}" ${mid}>${x}</text>`;});
     } else if(lab){
       const w=14+5.8*lab.length; let ox=q.ox;
       if(sd==="r") ox=760-w/2; else {const t=S.tw.find(t=>p>=t[1]-12&&p<=t[1]+t[3]+12);ox=Math.max(t[1]+4+w/2,Math.min(t[1]+t[3]-4-w/2,ox));}
@@ -1276,7 +1276,7 @@ function vmap(el){
     const l=g.dataset.e, e=ENT.find(x=>x[0]===l), st=entStats(l), vis=st.fs.filter(isVis).map(d=>d.f), visq=st.rs.filter(isVis).length, rua=x=>x.replace("R. Fitela","Rua da Fitela").replace("R. Fábricas","Rua das Fábricas").replace("R. Q. Castro","Rua Quinta do Castro").replace(" · "," e ");
     g.onclick=()=>{if(moved)return;hideTip();entPop(l);};
     g.onmouseenter=ev=>showTip(ev,`${e[1].replace("Ed. ","Edifício ")} · ${TORRE[l]}<br>${e[3]} Pisos<br>${st.fs.map(d=>mode==="qx"&&RESP(d)?`<span class="tip-qx">${d.f}</span>`:d.f).join(", ")}`+
-      (mode==="qx"?`<br>${st.rs.length} queixas a vermelho`:mode==="sel"?`<br>Vistorias: ${vis.join(", ")}${st.res.length?" · Reservas: "+st.res.map(d=>d.f).join(", "):""}`:mode==="cov"?`<br>${visq} de ${st.rs.length} queixas com vistoria`:"")+
+      (mode==="qx"?"":mode==="sel"?`<br>Vistorias: ${vis.join(", ")}${st.res.length?" · Reservas: "+st.res.map(d=>d.f).join(", "):""}`:mode==="cov"?`<br>${visq} de ${st.rs.length} queixas com vistoria`:"")+
       (NOLEG.includes(l)?"<br><i>Não assinalada na planta do cliente — posição a confirmar</i>":""));
     g.onmousemove=moveTip; g.onmouseleave=hideTip;
   });
