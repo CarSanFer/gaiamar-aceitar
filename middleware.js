@@ -40,7 +40,11 @@ export default async function middleware(request) {
   const esperado = await token(senha);
   const cookies = request.headers.get('cookie') || '';
   const m = cookies.match(new RegExp('(?:^|;\\s*)' + COOKIE + '=([a-f0-9]+)'));
-  if (m && m[1] === esperado) return;
+  if (m && m[1] === esperado) {
+    if (new URL(request.url).pathname === '/contactos.json')
+      return new Response(process.env.PLANO_CONTACTOS || '[]', { headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' } });
+    return;
+  }
 
   const html = { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' };
   if (request.method === 'POST') {
